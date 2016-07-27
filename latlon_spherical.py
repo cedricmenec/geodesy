@@ -1,5 +1,6 @@
 from math import radians, degrees, sin, cos, tan, atan2
 from math import sqrt, pi, fabs, log
+import dms
 
 EARTH_RADIUS = 6371.009 # In KM
 
@@ -7,6 +8,10 @@ class LatLon(object):
     def __init__(self, lat, lon):
         self.lat = lat
         self.lon = lon
+    
+    def toString(dms_format, dp):
+        return dms.toLat(this.lat, format, dp) + ', ' + Dms.toLon(this.lon, format, dp);
+        
         
     def distanceTo(self, point, radius=None):
         if not isinstance(point, LatLon):
