@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+
 from math import radians, degrees, sin, cos, tan, atan2
 from math import sqrt, pi, fabs, log
 import dms
