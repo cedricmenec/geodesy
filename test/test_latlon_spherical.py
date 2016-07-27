@@ -21,7 +21,11 @@ class GeodesicsTestCase(unittest.TestCase):
     def test_final_bearing_to(self):
         b = self.cambg.finalBearingTo(self.paris)
         self.assertEqual("{:.1f}".format(b), "157.9")
-    
+
+    def test_midpoint_to(self):
+        #p = cambg.midpointTo(paris)
+        pass
+        
     def test_rhumb_distance(self):
         d = self.cambg.rhumbDistanceTo(self.paris)
         self.assertEqual(("{:.1f}".format(d)), "404.3")

@@ -58,6 +58,36 @@ class LatLon(object):
         # Get initial bearing from destination point to this point & reverse it by adding 180°
         return (point.bearingTo(self) + 180) % 360
     
+    
+    def midpointTo(self, point):
+        """
+        Formula : 
+            Bx = cos φ2 ⋅ cos Δλ
+            By = cos φ2 ⋅ sin Δλ
+            φm = atan2( sin φ1 + sin φ2, √(cos φ1 + Bx)² + By² )
+            λm = λ1 + atan2(By, cos(φ1)+Bx) 
+        
+         see http://mathforum.org/library/drmath/view/51822.html for derivation
+        """
+        if not isinstance(point, LatLon):
+                raise TypeError('point is not LatLon object')
+                
+        lat1 = radians(self.lat)
+        lon1 = radians(self.lon)
+        delta_lon = radians(point.lon - self.lon)
+        
+        Bx = cos(lat2) * cos(delta_lon)
+        By = cos(lat2) * sin(delta_lon)
+        
+        x = sqrt( (cos(lat1) + Bx ) * (cos(lat1) + Bx) + By*By)
+        y = sin(lat1) + sin(lat2)
+        lat3 = atan2(y, x)
+        lon3 = lon1 + atan2( By, cos(lat1) + Bx )
+        
+        latlon = LatLon(degrees(lat3), (degrees(lon3)+540)%360-180) #Normalise to -180..+180°
+        return latlon
+    
+    
     # see http://williams.best.vwh.net/avform.htm#Rhumb
     def rhumbDistanceTo(self, point, radius=None):
         if not isinstance(point, LatLon):
