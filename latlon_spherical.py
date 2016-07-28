@@ -175,6 +175,12 @@ class LatLon(object):
             bearing -- {int | float} -- Initial bearing in degrees from north.
             radius -- {int | float} -- (Mean) radius of earth (defaults to radius in kilometres).
             
+        Formula:
+           φ2 = asin( sin φ1 ⋅ cos δ + cos φ1 ⋅ sin δ ⋅ cos θ )
+	       λ2 = λ1 + atan2( sin θ ⋅ sin δ ⋅ cos φ1, cos δ − sin φ1 ⋅ sin φ2 )
+           where : φ is latitude, λ is longitude, θ is the bearing (clockwise from north), 
+                         δ is the angular distance d/R; d being the distance travelled, R the earth’s radius
+            
         Examples:
             > p1 = LatLon(51.4778, -0.0015)
             > p2 = p1.destinationPoint(7794, 300.7);    # 51.5135°N, 000.0983°W
