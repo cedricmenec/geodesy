@@ -35,6 +35,13 @@ class GeodesicsTestCase(unittest.TestCase):
         p = self.cambg.intermediatePointTo(self.paris, 0.25).toString('d')
         self.assertEqual(p, '51.3721°N, 0.7073°E')
         
+    def test_destination_point(self):
+        bradwell = LatLon(51.4778, -0.0015)
+        distance = 7.794
+        bearing = 300.7
+        p = bradwell.destinationPoint(distance, bearing)
+        self.assertEqual(p.toString('d'), '51.5135°N, 0.0983°W')        
+        
     def test_rhumb_distance(self):
         d = self.cambg.rhumbDistanceTo(self.paris)
         self.assertEqual(("{:.1f}".format(d)), "404.3")

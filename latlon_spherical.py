@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-from math import radians, degrees, sin, cos, tan, atan2
+from math import radians, degrees, sin, cos, tan, atan2, asin
 from math import sqrt, pi, fabs, log
 import dms
 
@@ -164,6 +164,44 @@ class LatLon(object):
 
         return LatLon(degrees(lat3), (degrees(lon3) + 540)%360-180) # Normalise to -180..+180
 
+
+    def destinationPoint(self, distance, bearing, radius=None):
+        """
+        Return the destination point from ‘self’ point having travelled the given distance on the
+        given initial bearing (bearing normally varies around path followed).
+        
+        Arguments:
+            distance -- {int | float} -- Distance travelled, in same units as earth radius (default: kilometres).
+            bearing -- {int | float} -- Initial bearing in degrees from north.
+            radius -- {int | float} -- (Mean) radius of earth (defaults to radius in kilometres).
+            
+        Examples:
+            > p1 = LatLon(51.4778, -0.0015)
+            > p2 = p1.destinationPoint(7794, 300.7);    # 51.5135°N, 000.0983°W
+        
+        References : 
+            http://williams.best.vwh.net/avform.htm#LL
+        """
+        
+        if radius is None:
+            radius = EARTH_RADIUS
+        else:
+            radius = float(radius)
+        
+        angular_distance = float(distance) / radius
+        bearing = radians(float(bearing))
+        
+        lat1 = radians(self.lat)
+        lon1 = radians(self.lon)
+        
+        lat2 = asin(sin(lat1) * cos(angular_distance) + cos(lat1) * sin(angular_distance) * cos(bearing))
+        x = cos(angular_distance) - sin(lat1) * sin(lat2)
+        y = sin(bearing) * sin(angular_distance) * cos(lat1)
+        lon2 = lon1 + atan2(y, x)
+        
+        return LatLon(degrees(lat2), (degrees(lon2) + 540)%360-180)  #normalise to −180..+180°
+        
+        
     def rhumbDistanceTo(self, point, radius=None):
         """
         # see http://williams.best.vwh.net/avform.htm#Rhumb
