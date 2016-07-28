@@ -8,7 +8,6 @@ https://github.com/chrisveness/geodesy
 TODO:
 -----
 Implement all the functions of *LatLon* class for *latlon_spherical* module :
-* LatLon.intersection()
 * LatLon.crossTrackDistanceTo()
 * LatLon.maxLatitude()
 * LatLon.crossingParallels()
