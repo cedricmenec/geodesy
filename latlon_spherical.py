@@ -11,7 +11,7 @@ class LatLon(object):
         self.lat = lat
         self.lon = lon
     
-    def toString(self, dms_format, precision):
+    def toString(self, dms_format=None, precision=None):
         """
         Return a string representation of ‘self’ point, formatted as degrees, degrees+minutes, 
         or degrees+minutes+seconds.
