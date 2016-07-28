@@ -30,6 +30,9 @@ class GeodesicsTestCase(unittest.TestCase):
     def test_midpoint_to(self):
         #p = cambg.midpointTo(paris)
         pass
+    def test_intermediatepoint_to(self):
+        p = self.cambg.intermediatePointTo(self.paris, 0.25).toString('d')
+        self.assertEqual(p, '51.3721°N, 0.7073°E')
         
     def test_rhumb_distance(self):
         d = self.cambg.rhumbDistanceTo(self.paris)
