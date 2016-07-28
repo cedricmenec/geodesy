@@ -42,6 +42,12 @@ class GeodesicsTestCase(unittest.TestCase):
         p = bradwell.destinationPoint(distance, bearing)
         self.assertEqual(p.toString('d'), '51.5135°N, 0.0983°W')        
         
+    def test_intersection(self):
+        stn = LatLon(51.8853, 0.2545)   # Stansted airport (UK)
+        cdg = LatLon(49.0034, 2.5735) # Charles de Gaulle airport (FR)
+        p = LatLon.intersection(stn, 108.547, cdg, 32.435)
+        self.assertEqual(p.toString('d'), '50.9078°N, 4.5084°E')        
+        
     def test_rhumb_distance(self):
         d = self.cambg.rhumbDistanceTo(self.paris)
         self.assertEqual(("{:.1f}".format(d)), "404.3")

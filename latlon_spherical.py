@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
-from math import radians, degrees, sin, cos, tan, atan2, asin
-from math import sqrt, pi, fabs, log
+from math import radians, degrees, sin, cos, tan, atan2, asin, acos
+from math import sqrt, pi, fabs, log, isnan
 import dms
 
 EARTH_RADIUS = 6371.009 # In KM
@@ -200,6 +200,85 @@ class LatLon(object):
         lon2 = lon1 + atan2(y, x)
         
         return LatLon(degrees(lat2), (degrees(lon2) + 540)%360-180)  #normalise to −180..+180°
+        
+        
+    def intersection(point1, bearing1, point2, bearing2):
+        """
+        Return the point of intersection of two paths defined by point and bearing.
+        
+        Arguments:
+            point1 -- {LatLon} -- First point.
+            bearing1 -- {flot | int} -- Initial bearing from first point (in degrees).
+            point2 -- {LatLon} -- Second point.
+            bearing2 -- {float | int} -- Initial bearing of second point (in degrees).
+            
+        Example:
+            > p1 = LatLon(51.8853, 0.2545)
+            > brng1 = 108.547
+            > p2 = LatLon(49.0034, 2.5735)
+            > brng2 = 32.435
+            > pInt = interseection(p1, brng1, p2, brng2)   # 50.9078°N, 004.5084°E
+        
+        References:
+            http://williams.best.vwh.net/avform.htm#Intersection
+        """
+        
+        if not isinstance(point1, LatLon):
+                raise TypeError('point1 is not LatLon object')
+        if not isinstance(point2, LatLon):
+                raise TypeError('point2 is not LatLon object')
+                
+        lat1 = radians(point1.lat)
+        lon1 = radians(point1.lon)
+        lat2 = radians(point2.lat)
+        lon2 = radians(point2.lon)    
+        bearing_13 = radians(float(bearing1))
+        bearing_23 = radians(float(bearing2))
+        
+        delta_lat = lat2 - lat1
+        delta_lon = lon2 - lon1
+        
+        # Course from 1 to 2 (angular distance in radians -> adist)
+        adist_12 = 2 * asin( sqrt( sin(delta_lat/2)**2 + cos(lat1) * cos(lat2) * sin(delta_lon/2)**2 ))
+        if adist_12 == 0:
+            return None
+                
+        # Initial/final bearings between points 
+        initial_bearing = acos( ( sin(lat2) - sin(lat1)*cos(adist_12) ) / (sin(adist_12)*cos(lat1)) )
+        # Protect against rounding
+        if (isnan(initial_bearing)):
+            initial_bearing = 0
+        final_bearing = acos( (sin(lat1) - sin(lat2)*cos(adist_12) ) / (sin(adist_12)*cos(lat2)) )
+        
+        if sin(delta_lon) > 0:
+            bearing_12 = initial_bearing
+        else:
+            bearing_12 = 2*pi - initial_bearing
+        
+        if sin(delta_lon) > 0:
+            bearing_21 = 2*pi - final_bearing
+        else:
+            bearing_21 = final_bearing
+        
+        a1 = (bearing_13 - bearing_12 + pi) % (2*pi) - pi   # Angle 2-1-3
+        a2 = (bearing_21 - bearing_23 + pi) % (2*pi) - pi   # Angle 1-2-3
+        
+        # Check infinite intersections
+        if (sin(a1) == 0) and (sin(a2) == 0):
+            return None
+        
+        # Check ambiguous intersection
+        if (sin(a1)*sin(a2) < 0):
+            return None
+        
+        a3 = acos( -cos(a1)*cos(a2) + sin(a1)*sin(a2)*cos(adist_12) )
+        adist_13 = atan2( sin(adist_12)*sin(a1)*sin(a2), cos(a2) + cos(a1)*cos(a3) )
+        
+        lat3 = asin( sin(lat1)*cos(adist_13) + cos(lat1)*sin(adist_13)*cos(bearing_13) )
+        delta_lon_13 = atan2( sin(bearing_13)*sin(adist_13)*cos(lat1), cos(adist_13) - sin(lat1)*sin(lat3) )
+        lon3 = lon1 + delta_lon_13
+
+        return LatLon(degrees(lat3), (degrees(lon3)+540) % 360 - 180)   # Normalise to -180..+180
         
         
     def rhumbDistanceTo(self, point, radius=None):
