@@ -5,6 +5,11 @@ class GeodesicsTestCase(unittest.TestCase):
     def setUp(self):
         self.cambg = LatLon(52.205, 0.119)
         self.paris = LatLon(48.857, 2.351);
+        self.london = LatLon(51.521470, -0.138833)
+        
+    def test_tostring_d(self):
+        p = self.london.toString('d', 6)
+        self.assertEqual(p, '51.521470°N, 0.138833°W')
         
     def test_distance(self):
         d = self.cambg.distanceTo(self.paris)

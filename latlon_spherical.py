@@ -11,10 +11,24 @@ class LatLon(object):
         self.lat = lat
         self.lon = lon
     
-    def toString(dms_format, dp):
-        return dms.toLat(this.lat, format, dp) + ', ' + Dms.toLon(this.lon, format, dp);
+    def toString(self, dms_format, precision):
+        """
+        Return a string representation of ‘self’ point, formatted as degrees, degrees+minutes, 
+        or degrees+minutes+seconds.
         
+        Arguments :
+            dms_format -- {string} -- Return value format as 'd', 'dm', 'dms' for deg, deg+min, deg+min+sec (default=dms)
+            precision -- {int} -- Number of decimal to use (default: 1 for dms, 2 for dm, 4 for d).
+            
+        Example:
+            > point = LatLon(51.521470, -0.138833)
+            > point.toString('d', 6)
+            > 51.521470°N, 000.138833°W
+        """
         
+        return dms.toLat(self.lat, dms_format, precision) + ', ' + dms.toLon(self.lon, dms_format, precision)
+        
+    
     def distanceTo(self, point, radius=None):
         if not isinstance(point, LatLon):
             raise TypeError('point is not LatLon object')
