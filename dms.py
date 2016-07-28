@@ -115,7 +115,15 @@ def toDMS(deg, dms_format=None, precision=None):
     if dms_format in ["d", "deg"]:        
         # round degrees
         d = float(decimal_pattern.format(deg))
-        dms = str(d) + DEGREE_CHAR
+        
+        # Get decimal part without dot (eg: 5.55 -> 55) and add padding zeros or truncate the string
+        # to get the asked precision
+        dp = str(deg - int(deg)).split('.')[1]
+        if (len(dp) > precision):
+            dp = dp[:precision]
+        else:            
+            dp.ljust(precision, '0')        
+        dms = str(floor(d))  + '.' + dp + DEGREE_CHAR
     elif dms_format in ["dm", "deg+min"]:
         # convert degrees to minutes & round            
         mn = deg*60

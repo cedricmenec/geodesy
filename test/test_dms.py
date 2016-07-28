@@ -48,11 +48,11 @@ class DmsTestCase(unittest.TestCase):
     
     def test_todms_d(self):
         dms_result = dms.toDMS(48.857000, "d") 
-        self.assertEqual(dms_result, "48.857°")
+        self.assertEqual(dms_result, "48.8569°")
     
     def test_todms_d_precision2(self):
         dms_result = dms.toDMS(48.857000, "d", 2) 
-        self.assertEqual(dms_result, "48.86°")
+        self.assertEqual(dms_result, "48.85°")
 
     def test_tolat(self):
         lat = dms.toLat(48.857000)
