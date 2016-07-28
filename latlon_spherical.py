@@ -77,14 +77,21 @@ class LatLon(object):
     
     def midpointTo(self, point):
         """
+        Return the midpoint between 'self' point and the supplied point.
+        
+        Arguments:
+            point -- {LatLon} -- Latitude/longitude of destination point.
+            return -- {LatLon} -- Midpoint between 'self' point and the supplied point.
+            
         Formula : 
             Bx = cos φ2 ⋅ cos Δλ
             By = cos φ2 ⋅ sin Δλ
             φm = atan2( sin φ1 + sin φ2, √(cos φ1 + Bx)² + By² )
             λm = λ1 + atan2(By, cos(φ1)+Bx) 
         
-         see http://mathforum.org/library/drmath/view/51822.html for derivation
+        see http://mathforum.org/library/drmath/view/51822.html for derivation
         """
+        
         if not isinstance(point, LatLon):
                 raise TypeError('point is not LatLon object')
                 
