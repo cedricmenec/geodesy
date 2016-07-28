@@ -286,6 +286,40 @@ class LatLon(object):
 
         return LatLon(degrees(lat3), (degrees(lon3)+540) % 360 - 180)   # Normalise to -180..+180
         
+    def crossTrackDistanceTo(self, path_start, path_end, radius=None):
+        """
+        Returns (signed) distance from ‘self’ point to great circle defined by start_point and end_point.
+        
+        Arguments:
+            path_start -- {LatLon} -- Start point of great circle path.
+            path_end -- {LatLon} -- End point of great circle path.
+            radius -- {int | float} -- (Mean) radius of earth (defaults to EARTH_RADIUS in kilometres).
+        Return:
+            Distance to great circle (-ve if to left, +ve if to right of path)
+            
+        Example:
+            pCurrent = LatLon(53.2611, -0.7972)
+            p1 = LatLon(53.3206, -1.7297)
+            p2 = LatLon(53.1887,  0.1334)
+            d = pCurrent.crossTrackDistanceTo(p1, p2)   # -307.5 m
+        """
+        
+        if not isinstance(path_start, LatLon):
+            raise TypeError('path_start is not LatLon object')
+        if not isinstance(path_end, LatLon):
+            raise TypeError('path_end is not LatLon object')
+            
+        if radius is None:
+            radius = EARTH_RADIUS
+        else:
+            radius = float(radius)
+        
+        adist_13 = path_start.distanceTo(self, radius) / radius
+        bearing_13 = radians(path_start.bearingTo(self))
+        bearing_12 = radians(path_start.bearingTo(path_end))
+        
+        return asin( sin(adist_13) * sin(bearing_13-bearing_12) ) * radius
+        
         
     def rhumbDistanceTo(self, point, radius=None):
         """
