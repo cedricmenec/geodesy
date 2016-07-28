@@ -27,9 +27,8 @@ class LatLon(object):
         """
         
         return dms.toLat(self.lat, dms_format, precision) + ', ' + dms.toLon(self.lon, dms_format, precision)
-        
-    
-    def distanceTo(self, point, radius=None):
+
+    def distanceTo(self, point, radius=None):        
         if not isinstance(point, LatLon):
             raise TypeError('point is not LatLon object')
             
@@ -110,9 +109,8 @@ class LatLon(object):
         
         latlon = LatLon(degrees(lat3), (degrees(lon3)+540)%360-180) #Normalise to -180..+180°
         return latlon
+
     
-    
-    # see http://williams.best.vwh.net/avform.htm#Rhumb
     def intermediatePointTo(self, point, fraction):
         """
         Return the point at given fraction between ‘this’ point and specified point.
@@ -167,6 +165,10 @@ class LatLon(object):
         return LatLon(degrees(lat3), (degrees(lon3) + 540)%360-180) # Normalise to -180..+180
 
     def rhumbDistanceTo(self, point, radius=None):
+        """
+        # see http://williams.best.vwh.net/avform.htm#Rhumb
+        """
+        
         if not isinstance(point, LatLon):
                 raise TypeError('point is not LatLon object')
 
