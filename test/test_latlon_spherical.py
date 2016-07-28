@@ -28,8 +28,9 @@ class GeodesicsTestCase(unittest.TestCase):
         self.assertEqual("{:.1f}".format(b), "157.9")
 
     def test_midpoint_to(self):
-        #p = cambg.midpointTo(paris)
-        pass
+        p = self.cambg.midpointTo(self.paris).toString('d')
+        self.assertEqual(p, '50.5363°N, 1.2746°E')
+    
     def test_intermediatepoint_to(self):
         p = self.cambg.intermediatePointTo(self.paris, 0.25).toString('d')
         self.assertEqual(p, '51.3721°N, 0.7073°E')

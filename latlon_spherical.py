@@ -97,6 +97,7 @@ class LatLon(object):
                 
         lat1 = radians(self.lat)
         lon1 = radians(self.lon)
+        lat2 = radians(point.lat)
         delta_lon = radians(point.lon - self.lon)
         
         Bx = cos(lat2) * cos(delta_lon)
