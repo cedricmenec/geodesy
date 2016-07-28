@@ -4,7 +4,7 @@ from latlon_spherical import LatLon
 class GeodesicsTestCase(unittest.TestCase):
     def setUp(self):
         self.cambg = LatLon(52.205, 0.119)
-        self.paris = LatLon(48.857, 2.351);
+        self.paris = LatLon(48.857, 2.351)
         self.london = LatLon(51.521470, -0.138833)
         
     def test_tostring_d(self):
