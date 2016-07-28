@@ -1,5 +1,6 @@
 import unittest
-from latlon_spherical import LatLon
+from latlon_spherical import LatLon, EARTH_RADIUS
+import dms
 
 class GeodesicsTestCase(unittest.TestCase):
     def setUp(self):
@@ -47,6 +48,13 @@ class GeodesicsTestCase(unittest.TestCase):
         cdg = LatLon(49.0034, 2.5735) # Charles de Gaulle airport (FR)
         p = LatLon.intersection(stn, 108.547, cdg, 32.435)
         self.assertEqual(p.toString('d'), '50.9078°N, 4.5084°E')        
+        
+    def test_crosstrack_distance(self):
+        p0 = LatLon(53.2611, -0.7972)
+        p1 = LatLon(53.3206, -1.7297)
+        p2 = LatLon(53.1887,  0.1334)
+        d = p0.crossTrackDistanceTo(p1, p2, EARTH_RADIUS*1000)        
+        self.assertEqual("{:.2f}".format(d), "-307.55")
         
     def test_rhumb_distance(self):
         d = self.cambg.rhumbDistanceTo(self.paris)
