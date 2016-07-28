@@ -11,7 +11,7 @@ class LatLon(object):
         self.lat = lat
         self.lon = lon
     
-    def toString(self, dms_format, precision):
+    def toString(self, dms_format=None, precision=None):
         """
         Return a string representation of ‘self’ point, formatted as degrees, degrees+minutes, 
         or degrees+minutes+seconds.
@@ -27,9 +27,8 @@ class LatLon(object):
         """
         
         return dms.toLat(self.lat, dms_format, precision) + ', ' + dms.toLon(self.lon, dms_format, precision)
-        
-    
-    def distanceTo(self, point, radius=None):
+
+    def distanceTo(self, point, radius=None):        
         if not isinstance(point, LatLon):
             raise TypeError('point is not LatLon object')
             
@@ -97,6 +96,7 @@ class LatLon(object):
                 
         lat1 = radians(self.lat)
         lon1 = radians(self.lon)
+        lat2 = radians(point.lat)
         delta_lon = radians(point.lon - self.lon)
         
         Bx = cos(lat2) * cos(delta_lon)
@@ -109,10 +109,66 @@ class LatLon(object):
         
         latlon = LatLon(degrees(lat3), (degrees(lon3)+540)%360-180) #Normalise to -180..+180°
         return latlon
+
     
-    
-    # see http://williams.best.vwh.net/avform.htm#Rhumb
+    def intermediatePointTo(self, point, fraction):
+        """
+        Return the point at given fraction between ‘this’ point and specified point.
+        
+        Arguments:
+            point -- {LatLon} -- Latitude/longitude of destination point.
+            fraction -- {float} -- Fraction between the two points (0 = this point, 1 = specified point).
+        Return:
+            {LatLon} -- Midpoint between 'self' point and the supplied point.
+        
+        Example:
+            > p1 = LatLon(52.205, 0.119)
+            > p2 = new LatLon(48.857, 2.351)
+            > mid_point = p1.intermediatePointTo(p2, 0.25)  # 51.3721°N, 000.7073°E
+        """
+        
+        if not isinstance(point, LatLon):
+                raise TypeError('point is not LatLon object')
+        
+        lat1 = radians(self.lat)
+        lon1 = radians(self.lon)
+        lat2 = radians(point.lat)
+        lon2 = radians(point.lon)
+        
+        cos_lat1  = cos(lat1)
+        cos_lon1 = cos(lon1)
+        sin_lat1 = sin(lat1)
+        sin_lon1 = sin(lon1)
+        cos_lat2 = cos(lat2)
+        cos_lon2 = cos(lon2)
+        sin_lat2 = sin(lat2)
+        sin_lon2 = sin(lon2)
+        
+        # Distance between points
+        delta_lat = lat2 - lat1
+        delta_lon = lon2 - lon1
+        a = sin(delta_lat/2) * sin(delta_lat/2) + \
+               cos(lat1) * cos(lat2) * \
+               sin(delta_lon/2) * sin(delta_lon/2)
+        distance = 2 * atan2(sqrt(a), sqrt(1-a))
+        
+        A = sin((1-fraction) * distance) / sin(distance)
+        B = sin(fraction * distance) / sin(distance)
+        
+        x = A * cos_lat1 * cos_lon1 + B * cos_lat2 * cos_lon2
+        y = A * cos_lat1 * sin_lon1 + B * cos_lat2 * sin_lon2
+        z = A * sin_lat1 + B * sin_lat2
+        
+        lat3 = atan2(z, sqrt(x**2 + y**2))
+        lon3 = atan2(y, x)
+
+        return LatLon(degrees(lat3), (degrees(lon3) + 540)%360-180) # Normalise to -180..+180
+
     def rhumbDistanceTo(self, point, radius=None):
+        """
+        # see http://williams.best.vwh.net/avform.htm#Rhumb
+        """
+        
         if not isinstance(point, LatLon):
                 raise TypeError('point is not LatLon object')
 
