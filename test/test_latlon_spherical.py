@@ -7,6 +7,7 @@ class GeodesicsTestCase(unittest.TestCase):
         self.cambg = LatLon(52.205, 0.119)
         self.paris = LatLon(48.857, 2.351)
         self.london = LatLon(51.521470, -0.138833)
+        self.origin = LatLon(0, 0)
         
     def test_tostring_d(self):
         p = self.london.toString('d', 6)
@@ -55,6 +56,18 @@ class GeodesicsTestCase(unittest.TestCase):
         p2 = LatLon(53.1887,  0.1334)
         d = p0.crossTrackDistanceTo(p1, p2, EARTH_RADIUS*1000)        
         self.assertEqual("{:.2f}".format(d), "-307.55")
+        
+    def test_maxlatitude_0(self):
+        lat = self.origin.maxLatitude(0)
+        self.assertEqual(lat, 90)
+    
+    def test_maxlatitude_1(self):
+        lat = self.origin.maxLatitude(1)
+        self.assertEqual("{:.0f}".format(lat), '89')
+        
+    def test_maxlatitude_90(self):
+        lat = self.origin.maxLatitude(90)
+        self.assertEqual(lat, 0)
         
     def test_rhumb_distance(self):
         d = self.cambg.rhumbDistanceTo(self.paris)

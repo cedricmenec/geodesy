@@ -320,6 +320,27 @@ class LatLon(object):
         
         return asin( sin(adist_13) * sin(bearing_13-bearing_12) ) * radius
         
+    def maxLatitude(self, bearing):
+        """
+        Return maximum latitude reached when travelling on a great circle on given bearing from 'self'
+        point ('Clairaut's formula'). 
+        Negate the result for the minimum latitude (in the Southern hemisphere).
+        
+        Arguments:
+            bearing -- {int | float} -- Initial bearing (in degrees)
+        Return:
+            {float} -- Maximum latitude in degrees
+            
+        Example: 
+            > p = LatLon(0,0)
+            > p.maxLatitude(1)  # 89
+        """
+        
+        bearing = radians(bearing)
+        lat = radians(self.lat)
+        lat_max = acos( fabs( sin(bearing)*cos(lat) ) )
+        return degrees(lat_max)
+        
         
     def rhumbDistanceTo(self, point, radius=None):
         """
