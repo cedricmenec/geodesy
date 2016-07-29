@@ -435,3 +435,46 @@ class LatLon(object):
         angular_distance = sqrt(delta_lat*delta_lat + q*q*delta_lon*delta_lon)
         d = angular_distance * R
         return d
+    
+    
+    def rhumbBearingTo(self, point):
+        """
+        Return the bearing from ‘self’ point to destination point along a rhumb line.
+        
+        Arguments:
+            point -- {LatLon} -- Latitude/longitude of destination point.
+        Return:
+            {float} -- Bearing in degrees from north.
+        
+        Formula:
+           Δψ = ln( tan(π/4 + φ2/2) / tan(π/4 + φ1/2) ) 	(‘projected’ latitude difference)
+	       θ = atan2(Δλ, Δψ) 	
+                where φ is latitude, λ is longitude, Δλ is taking shortest route (<180°), 
+                R is the earth’s radius, ln is natural log
+                
+        Example:
+            > p1 = LatLon(51.127, 1.338)
+            > p2 = new LatLon(50.964, 1.853)    
+            > b = p1.rhumbBearingTo(p2)     # 116.7°
+        """
+        
+        if not isinstance(point, LatLon):
+            raise TypeError('point is not LatLon object')
+        
+        lat1 = radians(self.lat)
+        lat2 = radians(point.lat)
+
+        delta_lon = radians(point.lon - self.lon)
+        
+        # if delta_lon over 180° take shorter rhumb line across the anti-meridian        
+        if fabs(delta_lon) > pi:
+            if delta_lon > 0:
+                delta_lon =  -(2*pi - delta_lon)
+            else:
+                delta_lon = 2*pi + delta_lon
+        
+        delta_mercator_dist = log( tan(lat2/2 + pi/4) / tan(lat1/2 + pi/4) )
+        bearing = atan2(delta_lon, delta_mercator_dist)
+        
+        return (degrees(bearing)+360) % 360   # Normalise 0..+360
+        

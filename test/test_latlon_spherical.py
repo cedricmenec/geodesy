@@ -7,6 +7,8 @@ class GeodesicsTestCase(unittest.TestCase):
         self.cambg = LatLon(52.205, 0.119)
         self.paris = LatLon(48.857, 2.351)
         self.london = LatLon(51.521470, -0.138833)
+        self.dover = LatLon(51.127, 1.338)
+        self.calais = LatLon(50.964, 1.853)
         self.origin = LatLon(0, 0)
         
     def test_tostring_d(self):
@@ -80,5 +82,10 @@ class GeodesicsTestCase(unittest.TestCase):
         d = self.cambg.rhumbDistanceTo(self.paris)
         self.assertEqual(("{:.1f}".format(d)), "404.3")
     
+
+    def test_rhumb_bearing_to(self):
+        b = self.dover.rhumbBearingTo(self.calais)
+        self.assertEqual("{:.1f}".format(b), '116.7')
+
 if __name__ == '__main__':
     unittest.main()
