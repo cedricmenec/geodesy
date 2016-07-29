@@ -69,6 +69,13 @@ class GeodesicsTestCase(unittest.TestCase):
         lat = self.origin.maxLatitude(90)
         self.assertEqual(lat, 0)
         
+    def test_crossingparallels(self):
+        parallels = LatLon.crossingParallels(LatLon(0,0), LatLon(60,30), 30)
+        parallels_1 = LatLon(30, parallels["lon1"])
+        parallels_2 = LatLon(30, parallels["lon2"])
+        self.assertEqual(parallels_1.toString(), '30°00\'0.0"N, 9°35\'38.6"E')
+        self.assertEqual(parallels_2.toString(), '30°00\'0.0"N, 170°24\'21.4"E')
+        
     def test_rhumb_distance(self):
         d = self.cambg.rhumbDistanceTo(self.paris)
         self.assertEqual(("{:.1f}".format(d)), "404.3")

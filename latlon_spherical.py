@@ -344,7 +344,54 @@ class LatLon(object):
         lat_max = acos( fabs( sin(bearing)*cos(lat) ) )
         return degrees(lat_max)
         
+    def crossingParallels(point1, point2, latitude):
+        """
+         Return the pair of meridians at which a great circle defined by two points crosses the given latitude. 
+         If the great circle doesn't reach the given latitude, None is returned.
+         
+         Arguments:
+            point1 -- {LatLon} -- First point defining great circle.
+            point2 -- {LatLon} -- Second point defining great circle.
+            latitude -- { float | int} -- Latitude crossings are to be determined for.
+        Return:
+            {dictionary | None} -- Dictionary containing (lon1, lon2) or None if given latitude not reached.
+            
+        Example:
+            > parallels = LatLon.crossingParallels(LatLon(0,0), LatLon(60,30), 30)
+            > parallels_1 = LatLon(30, parallels["lon1"])
+            > parallels_2 = LatLon(30, parallels["lon2"])
+        """
         
+        lat = radians(latitude)
+        lat1 = radians(point1.lat)
+        lon1 = radians(point1.lon)
+        lat2 = radians(point2.lat)
+        lon2 = radians(point2.lon)
+        
+        delta_lon = lon2 - lon1
+        
+        x = sin(lat1) * cos(lat2) * cos(lat) * sin(delta_lon)
+        y = sin(lat1) * cos(lat2) * cos(lat) * cos (delta_lon) - cos(lat1) * sin(lat2) * cos(lat)
+        z = cos(lat1) * cos(lat2) * sin(lat) * sin(delta_lon)
+
+        if (z**2 > x**2 +y**2):
+            return None     #  great circle doesn't reach latitude
+        
+        # longitude at max latitude
+        lon_max = atan2(-y, x)      
+        
+        # Δλ from λm to intersection points
+        delta_lon_i = acos(z / sqrt(x**2 + y**2))
+        
+        lon_i1 = lon1 + lon_max - delta_lon_i
+        lon_i2 = lon1 + lon_max + delta_lon_i
+        
+        return {
+            "lon1": (degrees(lon_i1)+540)%360-180,    # Normalise to -180..+180
+            "lon2": (degrees(lon_i2)+540)%360-180
+        }
+    
+    
     def rhumbDistanceTo(self, point, radius=None):
         """
         # see http://williams.best.vwh.net/avform.htm#Rhumb
