@@ -8,7 +8,5 @@ https://github.com/chrisveness/geodesy
 TODO:
 -----
 Implement all the functions of *LatLon* class for *latlon_spherical* module :
-* LatLon.crossingParallels()
-* LatLon.rhumbBearingTo()
 * LatLon.rhumbDestinationPoint()
 * LatLon.rhumbMidpointTo()
