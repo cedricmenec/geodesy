@@ -323,13 +323,16 @@ class LatLon(object):
     def maxLatitude(self, bearing):
         """
         Return maximum latitude reached when travelling on a great circle on given bearing from 'self'
-        point ('Clairaut's formula'). 
+        point. 
         Negate the result for the minimum latitude (in the Southern hemisphere).
         
         Arguments:
             bearing -- {int | float} -- Initial bearing (in degrees)
         Return:
             {float} -- Maximum latitude in degrees
+            
+        Formula (Clairaut): 
+            φmax = acos( | sin θ ⋅ cos φ | )
             
         Example: 
             > p = LatLon(0,0)
