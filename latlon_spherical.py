@@ -394,7 +394,21 @@ class LatLon(object):
     
     def rhumbDistanceTo(self, point, radius=None):
         """
-        # see http://williams.best.vwh.net/avform.htm#Rhumb
+        Return the distance travelling from ‘self’ point to destination point along a rhumb line.
+        
+        Arguments: 
+            point -- {LatLon} -- Latitude/longitude of destination point.
+            radius -- {float | int} -- (Mean) radius of earth (defaults to EARTH_RADIUS in kilometres).
+        Return:
+            {float} -- Distance between this point and destination point (same units as radius - default is kms).
+            
+        Reference:
+            http://williams.best.vwh.net/avform.htm#Rhumb
+        
+        Example: 
+            > p1 = LatLon(52.205, 0.119)
+            > p2 = LatLon(48.857, 2.351)
+            > p1.rhumbDistanceTo(p2)    # 404.3 (kms)
         """
         
         if not isinstance(point, LatLon):

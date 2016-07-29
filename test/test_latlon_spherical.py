@@ -78,10 +78,9 @@ class GeodesicsTestCase(unittest.TestCase):
         self.assertEqual(parallels_1.toString(), '30°00\'0.0"N, 9°35\'38.6"E')
         self.assertEqual(parallels_2.toString(), '30°00\'0.0"N, 170°24\'21.4"E')
         
-    def test_rhumb_distance(self):
-        d = self.cambg.rhumbDistanceTo(self.paris)
-        self.assertEqual(("{:.1f}".format(d)), "404.3")
-    
+    def test_rhumb_distance_to(self):
+        d = self.dover.rhumbDistanceTo(self.calais)
+        self.assertEqual("{:.4f}".format(d), '40.3078')        
 
     def test_rhumb_bearing_to(self):
         b = self.dover.rhumbBearingTo(self.calais)
