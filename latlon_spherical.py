@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 from math import radians, degrees, sin, cos, tan, atan2, asin, acos
-from math import sqrt, pi, fabs, log, isnan
+from math import sqrt, pi, fabs, log, isnan, isfinite
 import dms
 
 EARTH_RADIUS = 6371.009 # In KM
@@ -544,3 +544,46 @@ class LatLon(object):
         lon2 = lon1 + delta_lon
 
         return LatLon(degrees(lat2), (degrees(lon2)+540)%360-180)   # normalise to -180..+180°
+
+    
+    def rhumbMidpointTo(self, point):
+        """
+        Return the loxodromic midpoint (along a rhumb line) between ‘self’ point and second point.
+        
+        Arguments:
+            point -- {LatLon} -- Latitude/longitude of second point.
+        Return:
+            {LatLon} -- Midpoint between this point and second point.
+        
+        Example:
+            > p1 = LatLon(51.127, 1.338)
+            > p2 = LatLon(50.964, 1.853)
+            > pMid = p1.rhumbMidpointTo(p2)     # 51.0455°N, 001.5957°E
+        """
+        
+        if not isinstance(point, LatLon):
+            raise TypeError('point is not LatLon object')
+            
+        lat1 = radians(self.lat)
+        lon1 = radians(self.lon)
+        lat2 = radians(point.lat)
+        lon2 = radians(point.lon)
+        
+        if fabs(lon2-lon1) > pi:
+            lon1 += 2*pi   # crossing anti-meridian
+        
+        delta_lon = lon2 - lon1
+        
+        lat3 = (lat1+lat2) / 2
+        
+        f1 = tan(pi/4 + lat1/2)
+        f2 = tan(pi/4 + lat2/2)
+        f3 = tan(pi/4 + lat3/2)            
+        lon3 = (  delta_lon*log(f3) + lon1*log(f2) - lon2*log(f1) ) / log(f2/f1)
+        
+        # parallel of latitude
+        if isfinite(lon3):
+            lon3 = (lon1+lon2)/2
+            
+        return LatLon(degrees(lat3), (degrees(lon3)+540)%360-180)   # normalise to −180..+180°
+        
