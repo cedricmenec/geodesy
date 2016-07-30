@@ -85,6 +85,12 @@ class GeodesicsTestCase(unittest.TestCase):
     def test_rhumb_bearing_to(self):
         b = self.dover.rhumbBearingTo(self.calais)
         self.assertEqual("{:.1f}".format(b), '116.7')
+        
+    def test_rhumb_destination_point(self):
+        distance = 40.31    # In kilometres
+        bearing = 116.7     # In degrees
+        p = self.dover.rhumbDestinationPoint(distance, bearing)
+        self.assertEqual(p.toString('d'), '50.9641°N, 1.8540°E')
 
 if __name__ == '__main__':
     unittest.main()

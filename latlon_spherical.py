@@ -492,3 +492,55 @@ class LatLon(object):
         
         return (degrees(bearing)+360) % 360   # Normalise 0..+360
         
+        
+    def rhumbDestinationPoint(self, distance, bearing, radius=None):
+        """
+        Return the destination point having travelled along a rhumb line from ‘self’ 
+        point the given distance on the  given bearing.
+
+        Arguments:
+            distance -- {float | int} -- Distance travelled, in same units as earth radius (default: kilometres).
+            bearing -- {float | int} -- Bearing in degrees from north.
+            radius -- {float | int} -- (Mean) radius of earth (defaults to EARTH_RADIUS in kilometres).
+        Return:
+            {LatLon} -- Destination point.
+
+        Example:
+            > p = LatLon(51.127, 1.338)
+            > distance = 40.31    # In kilometres
+            > bearing = 116.7     # In degrees
+            > p.rhumbDestinationPoint(distance, bearing)    # 50.9641°N, 1.8540°E
+        """
+
+        if radius is None:
+            radius = EARTH_RADIUS
+        else:
+            radius = float(radius)
+
+        lat1 = radians(self.lat)
+        lon1 = radians(self.lon)
+
+        angular_distance = float(distance) / radius
+        bearing = radians(bearing)
+
+        delta_lat = angular_distance * cos(bearing)
+        lat2 = lat1 + delta_lat
+
+        # check for some daft bugger going past the pole, normalise latitude if so
+        if fabs(lat2) > pi/2:
+            if lat2 > 0:
+                lat2 = pi-lat2
+            else:
+                lat2 = -pi-lat2
+
+        delta_mercator_distance = log( tan(lat2/2 + pi/4) / tan(lat1/2 + pi/4) ) 
+        # E-W course becomes ill-conditioned with 0/0
+        if fabs(delta_mercator_distance > 10e-12):
+            q = delta_lat / delta_mercator_distance
+        else:
+            q = cos(lat1)
+
+        delta_lon = angular_distance * sin(bearing) / q
+        lon2 = lon1 + delta_lon
+
+        return LatLon(degrees(lat2), (degrees(lon2)+540)%360-180)   # normalise to -180..+180°
