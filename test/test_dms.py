@@ -1,5 +1,5 @@
 import unittest
-import dms
+import geodesy.dms as dms
 
 class DmsTestCase(unittest.TestCase):
     """

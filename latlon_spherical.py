@@ -2,7 +2,7 @@
 
 from math import radians, degrees, sin, cos, tan, atan2, asin, acos
 from math import sqrt, pi, fabs, log, isnan, isfinite
-import dms
+import geodesy.dms as dms
 
 EARTH_RADIUS = 6371.009 # In KM
 

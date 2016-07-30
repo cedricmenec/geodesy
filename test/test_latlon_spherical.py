@@ -1,6 +1,6 @@
 import unittest
-from latlon_spherical import LatLon, EARTH_RADIUS
-import dms
+from geodesy.latlon_spherical import LatLon, EARTH_RADIUS
+import geodesy.dms
 
 class GeodesicsTestCase(unittest.TestCase):
     def setUp(self):
